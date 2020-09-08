@@ -1,222 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://1958818905.github.io</id>
-    <title>Gridea</title>
-    <updated>2020-09-07T12:05:00.132Z</updated>
+    <title>高士傑</title>
+    <updated>2020-09-08T11:35:40.868Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://1958818905.github.io"/>
     <link rel="self" href="https://1958818905.github.io/atom.xml"/>
     <subtitle>温故而知新</subtitle>
     <logo>https://1958818905.github.io/images/avatar.png</logo>
     <icon>https://1958818905.github.io/favicon.ico</icon>
-    <rights>All rights reserved 2020, Gridea</rights>
+    <rights>All rights reserved 2020, 高士傑</rights>
+    <entry>
+        <title type="html"><![CDATA[Spring Boot：Spring Boot 中 Redis 的使用]]></title>
+        <id>https://1958818905.github.io/post/spring-bootspring-boot-zhong-redis-de-shi-yong/</id>
+        <link href="https://1958818905.github.io/post/spring-bootspring-boot-zhong-redis-de-shi-yong/">
+        </link>
+        <updated>2020-09-08T11:26:40.000Z</updated>
+    </entry>
     <entry>
         <title type="html"><![CDATA[SpringBoot注解]]></title>
         <id>https://1958818905.github.io/post/ce-shi/</id>
         <link href="https://1958818905.github.io/post/ce-shi/">
         </link>
         <updated>2020-09-07T06:45:13.000Z</updated>
-        <content type="html"><![CDATA[<h3 id="springboot注解的优缺点">SpringBoot注解的优缺点</h3>
-<ol>
-<li>优点
-<ul>
-<li>快速构建项目。</li>
-<li>对主流开发框架的无配置集成。</li>
-<li>项目可独立运行，无须外部依赖Servlet容器。</li>
-<li>提供运行时的应用监控。</li>
-<li>极大的提高了开发、部署效率。</li>
-<li>与云计算的天然集成。</li>
-</ul>
-</li>
-<li>缺点：
-<ul>
-<li>版本迭代速度很快，一些模块改动很大</li>
-<li>由于不用自己做配置，报错时很难定位</li>
-<li>网上现成的解决方案比较少</li>
-</ul>
-</li>
-</ol>
-<h3 id="注解">注解</h3>
-<ol>
-<li>SpringBootApplication – 主配置类
-<ul>
-<li>效果：说明这个类就是SpringBoot的主配置类，SpringBoot就应该运行主配置类的main方法执行程序。</li>
-</ul>
-</li>
-</ol>
-<pre><code class="language-java">@SpringBootApplication
-public class SpringBootMaven {
-  public static void main(String[] args) {
-      SpringApplication.run(SpringBootMaven.class, args);
-  }
-}
-</code></pre>
-<ul>
-<li>继承@SpringBootConfiguration、@EnableAutoConfiguration、@ComponentScan</li>
-<li>@SpringBootConfiguration：继承@Configuration，Spring配置注解，将当前类声明的一个或多个@Bean注解标记的方法纳入Spring容器，实例名就是方法名.</li>
-<li>@EnableAutoConfiguration：继承@AutoConfigurationPackage，<br>
-导入了AutoConfigurationImportSelector.class AutoConfigurationPackages.Registrar.class根据添加的jar包来配置项目的默认配置。</li>
-<li>@ComponentScan：扫描当前包及其子包下被@Component，@Controller，@Service，</li>
-<li>@Repository注解标记的类并纳入到spring容器中进行管理</li>
-</ul>
-<ol start="2">
-<li>EnableAutoConfiguration -自动装配</li>
-</ol>
-<ul>
-<li>效果：借助AutoConfigurationImportSelector.class，为SpringBoot应用将所有符合条件的@Configuration配置都加载到当前SpringBoot创建并使用的IoC容器</li>
-</ul>
-<pre><code class="language-java">@AutoConfigurationPackage
-@Import(AutoConfigurationImportSelector.class)
-</code></pre>
-<ol start="3">
-<li>@RestController – 控制器</li>
-</ol>
-<ul>
-<li>@RestController == @ResponseBody + @Controller</li>
-<li>@ResponseBody：标记在类上，表示类下所有方法返回一条语句给网站，@Controller：标记当前类为控制器.</li>
-</ul>
-<pre><code>@RestController
-public class SpringbootiniApplication {
-    @RequestMapping(&quot;/&quot;)
-    String hello(){
-        return &quot;hello world quick&quot;;
-    }
-}
-</code></pre>
-<ol start="4">
-<li>@ConfigurationProperties – 配置属性绑定</li>
-</ol>
-<ul>
-<li>把全局/主配yml/properties的配置信息注入到POJO（全局 &gt; application.yml/properties）</li>
-<li>需要把当前类标记为组件（@Component），添加属性prefix = “xx”，xx为yml里的key</li>
-</ul>
-<pre><code>@Component
-@ConfigurationProperties(prefix = &quot;person&quot;)
-public class Person {
-    int age;
-    String name;
-    public int getAge() {
-        return age;
-    }
-    public void setAge(int age) {
-        this.age = age;
-    }
-}
-
-</code></pre>
-<ul>
-<li>而且根据SpringBoot文档，还需要添加依赖处理器</li>
-</ul>
-<pre><code>&lt;!-- yml依赖处理器 --&gt;
-&lt;dependency&gt;
-    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
-    &lt;artifactId&gt;spring-boot-configuration-processor&lt;/artifactId&gt;
-    &lt;optional&gt;true&lt;/optional&gt;
-&lt;/dependency&gt;
-</code></pre>
-<ul>
-<li>然后重新启动springboot</li>
-</ul>
-<ol start="5">
-<li>@PropertySource – 引入SpringBoot配置</li>
-</ol>
-<ul>
-<li>当@ConfigurationProperties需要从副配置文件拿数据时，可用@PropertySource手动引入副配置，value可指定多个路径</li>
-</ul>
-<pre><code>@Component
-@ConfigurationProperties(prefix = &quot;person&quot;)
-@PropertySource(value = {&quot;classpath:person.properties&quot;})
-public class Person {
-    int age;
-    String name;
-    public int getAge() {
-        return age;
-    }
-    public void setAge(int age) {
-        this.age = age;
-    }
-}
-</code></pre>
-<ul>
-<li>相同key优先级：全局配置 &gt; 副配置</li>
-<li>上面用person.properties而不用person.yml不是没有原因的，yml除了主配，其他配置不生效</li>
-</ul>
-<ol start="6">
-<li>@ImportSource – 引入Spring配置@ImportSource – 引入Spring配置</li>
-</ol>
-<ul>
-<li>在SpringBoot中，引入bean.xml（Spring配置文件），需要在主类配置该注解，可导入多个配置文件</li>
-</ul>
-<pre><code>@SpringBootApplication
-@ImportResource(locations = {&quot;classpath:bean.xml&quot;})
-public class SpringbootiniApplication {
-    public static void main(String[] args) {
-        SpringApplication.run(SpringbootiniApplication.class, args);
-    }
-}
-</code></pre>
-<ol start="7">
-<li>@Configuration – 注解代替Spring配置</li>
-</ol>
-<ul>
-<li>Spring注解，标记类后当前类成配置类，当前类的@Bean注解即</li>
-<li>applicationContext.xml == @Configuration + @Bean + @ComponentSca…</li>
-<li>SpringBoot推荐 =&gt; 注解代替配置文件</li>
-</ul>
-<pre><code>@Configuration
-public class MyAppConfig {
-    @Bean
-    public Student student(){
-        System.out.println(&quot;@bean is ok&quot;);
-        return new Student();
-    }
-}
-class Student{}
-</code></pre>
-<ul>
-<li>@Bean：将方法返回值添加到容器中；容器中这个组件默认id就是方法名</li>
-</ul>
-<ol start="8">
-<li>@ResponseBody – 文本返回</li>
-</ol>
-<ul>
-<li>标注方法上，如果你有返回值，返回值变文本格式输出，若没有标注，则分发器会走视图解析器，然后报错说/template下找不到视图，如果你只是ajax异步回来处理数据存储，不需要返回页面则无需标注</li>
-</ul>
-<pre><code>@RequestMapping(&quot;/login&quot;)
-　　@ResponseBody
-　　public User login(User user){
-　　　　return user;
-　　}
-　　User字段：userName pwd
-　　那么在前台接收到的数据为：’{“userName”:“xxx”,“pwd”:“xxx”}’
-</code></pre>
-<ol start="9">
-<li>@Transactional – 事务</li>
-</ol>
-<ul>
-<li>如下有一个保存用户的方法，加入 @Transactional 注解，使用默认配置，抛出异常之后，事务会自动回滚，数据不会插入到数据库。</li>
-</ul>
-<pre><code>@Transactional
-public void save() {
-    User user = new User(&quot;服部半藏&quot;);
-    userMapper.insertSelective(user);
-
-    if (true) {
-        throw new RuntimeException(&quot;save 抛异常了&quot;);
-    }
-}
-</code></pre>
-<ol start="10">
-<li>@Param – 绑定EL和参数</li>
-</ol>
-<ul>
-<li>mybatis提示类型绑定问题</li>
-</ul>
-<pre><code>@Select(&quot;select * from myuser where loginname=#{loginname} and password=#{password}&quot;)
-User findWithLoginnameAndPassword(@Param(&quot;loginname&quot;)int loginname,
-                                  @Param(&quot;password&quot;)String password);
-</code></pre>
-]]></content>
     </entry>
     <entry>
         <title type="html"><![CDATA[Hello Gridea]]></title>
@@ -229,25 +35,6 @@ User findWithLoginnameAndPassword(@Param(&quot;loginname&quot;)int loginname,
 ]]></summary>
         <content type="html"><![CDATA[<p>👏  欢迎使用 <strong>Gridea</strong> ！<br>
 ✍️  <strong>Gridea</strong> 一个静态博客写作客户端。你可以用它来记录你的生活、心情、知识、笔记、创意... ...</p>
-<!-- more -->
-<p><a href="https://github.com/getgridea/gridea">Github</a><br>
-<a href="https://gridea.dev/">Gridea 主页</a><br>
-<a href="http://fehey.com/">示例网站</a></p>
-<h2 id="特性">特性👇</h2>
-<p>📝  你可以使用最酷的 <strong>Markdown</strong> 语法，进行快速创作</p>
-<p>🌉  你可以给文章配上精美的封面图和在文章任意位置插入图片</p>
-<p>🏷️  你可以对文章进行标签分组</p>
-<p>📋  你可以自定义菜单，甚至可以创建外部链接菜单</p>
-<p>💻  你可以在 <strong>Windows</strong>，<strong>MacOS</strong> 或 <strong>Linux</strong> 设备上使用此客户端</p>
-<p>🌎  你可以使用 <strong>𝖦𝗂𝗍𝗁𝗎𝖻 𝖯𝖺𝗀𝖾𝗌</strong> 或 <strong>Coding Pages</strong> 向世界展示，未来将支持更多平台</p>
-<p>💬  你可以进行简单的配置，接入 <a href="https://github.com/gitalk/gitalk">Gitalk</a> 或 <a href="https://github.com/SukkaW/DisqusJS">DisqusJS</a> 评论系统</p>
-<p>🇬🇧  你可以使用<strong>中文简体</strong>或<strong>英语</strong></p>
-<p>🌁  你可以任意使用应用内默认主题或任意第三方主题，强大的主题自定义能力</p>
-<p>🖥  你可以自定义源文件夹，利用 OneDrive、百度网盘、iCloud、Dropbox 等进行多设备同步</p>
-<p>🌱 当然 <strong>Gridea</strong> 还很年轻，有很多不足，但请相信，它会不停向前 🏃</p>
-<p>未来，它一定会成为你离不开的伙伴</p>
-<p>尽情发挥你的才华吧！</p>
-<p>😘 Enjoy~</p>
 ]]></content>
     </entry>
 </feed>

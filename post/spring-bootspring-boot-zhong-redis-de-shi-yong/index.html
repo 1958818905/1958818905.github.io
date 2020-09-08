@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>Spring Boot：Spring Boot 中 Redis 的使用 | 高士傑</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://1958818905.github.io/favicon.ico?v=1599564936891">
+<link rel="stylesheet" href="https://1958818905.github.io/styles/main.css">
+
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+    <meta name="description" content="Spring Boot 对常用的数据库支持外，对 Nosql 数据库也进行了封装自动化。
+
+Redis 介绍
+Redis 是目前业界使用最广泛的内存数据存储。相比 Memcached，Redis 支持更丰富的数据结构，例如 hashes, ..." />
+    <meta name="keywords" content="" />
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://1958818905.github.io">
+        <img src="https://1958818905.github.io/images/avatar.png?v=1599564936891" class="site-logo">
+        <h1 class="site-title">高士傑</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      温故而知新
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://1958818905.github.io/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">Spring Boot：Spring Boot 中 Redis 的使用</h2>
+            <div class="post-date">2020-09-08</div>
+            
+            <div class="post-content" v-pre>
+              <h3 id="spring-boot-对常用的数据库支持外对-nosql-数据库也进行了封装自动化">Spring Boot 对常用的数据库支持外，对 Nosql 数据库也进行了封装自动化。</h3>
+<ul>
+<li>Redis 介绍</li>
+<li>Redis 是目前业界使用最广泛的内存数据存储。相比 Memcached，Redis 支持更丰富的数据结构，例如 hashes, lists, sets 等，同时支持数据持久化。除此之外，Redis 还提供一些类数据库的特性，比如事务，HA，主从库。可以说 Redis 兼具了缓存系统和数据库的一些特性，因此有着丰富的应用场景。本文介绍 Redis 在 Spring Boot 中两个典型的应用场景。</li>
+<li>如何使用
+<ol>
+<li>引入依赖包</li>
+</ol>
+<pre><code>&lt;dependency&gt;
+ &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+ &lt;artifactId&gt;spring-boot-starter-data-redis&lt;/artifactId&gt;
+</code></pre>
+</li>
+</ul>
+</dependency>
+<dependency>
+    <groupId>org.apache.commons</groupId>
+    <artifactId>commons-pool2</artifactId>
+</dependency>
+```
+- Spring Boot 提供了对 Redis 集成的组件包：spring-boot-starter-data-redisspring-boot-starter-data-redis依赖于spring-data-redis 和 lettuce 。Spring Boot 1.0 默认使用的是 Jedis 客户端，2.0 替换成 Lettuce，但如果你从 Spring Boot 1.5.X 切换过来，几乎感受不大差异，这是因为 spring-boot-starter-data-redis 为我们隔离了其中的差异性。
+- Lettuce 是一个可伸缩线程安全的 Redis 客户端，多个线程可以共享同一个 RedisConnection，它利用优秀 netty NIO 框架来高效地管理多个连接。
+2. 添加配置文件
+```
+# Redis数据库索引（默认为0）
+spring.redis.database=0  
+# Redis服务器地址
+spring.redis.host=localhost
+# Redis服务器连接端口
+spring.redis.port=6379  
+# Redis服务器连接密码（默认为空）
+spring.redis.password=
+# 连接池最大连接数（使用负值表示没有限制） 默认 8
+spring.redis.lettuce.pool.max-active=8
+# 连接池最大阻塞等待时间（使用负值表示没有限制） 默认 -1
+spring.redis.lettuce.pool.max-wait=-1
+# 连接池中的最大空闲连接 默认 8
+spring.redis.lettuce.pool.max-idle=8
+# 连接池中的最小空闲连接 默认 0
+spring.redis.lettuce.pool.min-idle=0
+```
+3. 添加 cache 的配置类
+```
+@Configuration
+@EnableCaching
+public class RedisConfig extends CachingConfigurerSupport{
+<pre><code>@Bean
+public KeyGenerator keyGenerator() {
+    return new KeyGenerator() {
+        @Override
+        public Object generate(Object target, Method method, Object... params) {
+            StringBuilder sb = new StringBuilder();
+            sb.append(target.getClass().getName());
+            sb.append(method.getName());
+            for (Object obj : params) {
+                sb.append(obj.toString());
+            }
+            return sb.toString();
+        }
+    };
+}
+</code></pre>
+<p>}</p>
+<pre><code>- 注意我们使用了注解：@EnableCaching来开启缓存。
+4. 直接使用
+</code></pre>
+<p>@RunWith(SpringRunner.class)<br>
+@SpringBootTest<br>
+public class TestRedis {<br>
+@Autowired<br>
+private StringRedisTemplate stringRedisTemplate;<br>
+@Autowired<br>
+private RedisTemplate redisTemplate;</p>
+<pre><code>@Test
+public void test() throws Exception {
+    stringRedisTemplate.opsForValue().set(&quot;aaa&quot;, &quot;111&quot;);
+    Assert.assertEquals(&quot;111&quot;, stringRedisTemplate.opsForValue().get(&quot;aaa&quot;));
+}
+
+@Test
+public void testObj() throws Exception {
+    User user=new User(&quot;aa@126.com&quot;, &quot;aa&quot;, &quot;aa123456&quot;, &quot;aa&quot;,&quot;123&quot;);
+    ValueOperations&lt;String, User&gt; operations=redisTemplate.opsForValue();
+    operations.set(&quot;com.neox&quot;, user);
+    operations.set(&quot;com.neo.f&quot;, user,1, TimeUnit.SECONDS);
+    Thread.sleep(1000);
+    //redisTemplate.delete(&quot;com.neo.f&quot;);
+    boolean exists=redisTemplate.hasKey(&quot;com.neo.f&quot;);
+    if(exists){
+        System.out.println(&quot;exists is true&quot;);
+    }else{
+        System.out.println(&quot;exists is false&quot;);
+    }
+   // Assert.assertEquals(&quot;aa&quot;, operations.get(&quot;com.neo.f&quot;).getUserName());
+}
+</code></pre>
+<p>}</p>
+<pre><code>- 以上都是手动使用的方式，如何在查找数据库的时候自动使用缓存呢，看下面；
+5. 自动根据方法生成缓存
+</code></pre>
+<p>@RestController<br>
+public class UserController {</p>
+<pre><code>@RequestMapping(&quot;/getUser&quot;)
+@Cacheable(value=&quot;user-key&quot;)
+public User getUser() {
+    User user=new User(&quot;aa@126.com&quot;, &quot;aa&quot;, &quot;aa123456&quot;, &quot;aa&quot;,&quot;123&quot;);
+    System.out.println(&quot;若下面没出现“无缓存的时候调用”字样且能打印出数据表示测试成功&quot;);
+    return user;
+}
+</code></pre>
+<p>}</p>
+<pre><code>- 其中 value 的值就是缓存到 Redis 中的 key
+</code></pre>
+
+            </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://1958818905.github.io/post/ce-shi/">
+                  <h3 class="post-title">
+                    SpringBoot注解
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+
+
+
+
+  </body>
+</html>
