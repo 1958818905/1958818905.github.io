@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://1958818905.github.io</id>
     <title>高士傑</title>
-    <updated>2020-09-10T11:06:07.055Z</updated>
+    <updated>2020-09-14T12:04:11.353Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://1958818905.github.io"/>
     <link rel="self" href="https://1958818905.github.io/atom.xml"/>
@@ -10,6 +10,13 @@
     <logo>https://1958818905.github.io/images/avatar.png</logo>
     <icon>https://1958818905.github.io/favicon.ico</icon>
     <rights>All rights reserved 2020, 高士傑</rights>
+    <entry>
+        <title type="html"><![CDATA[Mybatis（二） 多数据源最简解决方案]]></title>
+        <id>https://1958818905.github.io/post/mybatiser-duo-shu-ju-yuan-zui-jian-jie-jue-fang-an/</id>
+        <link href="https://1958818905.github.io/post/mybatiser-duo-shu-ju-yuan-zui-jian-jie-jue-fang-an/">
+        </link>
+        <updated>2020-09-14T11:59:36.000Z</updated>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Spring-Boot中MyBatis的使用和配置(一)]]></title>
         <id>https://1958818905.github.io/post/spring-boot-zhong-mybatis-de-shi-yong-he-pei-zhi-yi/</id>

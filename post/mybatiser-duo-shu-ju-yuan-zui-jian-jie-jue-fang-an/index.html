@@ -1,0 +1,319 @@
+<html>
+<head>
+    <meta charset="utf-8"/>
+<meta name="description" content=""/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+<title>Mybatis（二） 多数据源最简解决方案 | 高士傑</title>
+
+<link rel="shortcut icon" href="https://1958818905.github.io/favicon.ico?v=1600085048534">
+
+<link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://1958818905.github.io/styles/main.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css">
+
+<script src="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.15.10/languages/dockerfile.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.15.10/languages/dart.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/moment@2.27.0/moment.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/js/bootstrap.min.js"></script>
+<!-- DEMO JS -->
+<!--<script src="media/scripts/index.js"></script>-->
+
+
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.css">
+</head>
+<body>
+<div class="main gt-bg-theme-color-first">
+    <nav class="navbar navbar-expand-lg">
+    <div class="navbar-brand">
+        <img class="user-avatar" src="/images/avatar.png" alt="头像">
+        <div class="site-name gt-c-content-color-first">
+            高士傑
+        </div>
+    </div>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <i class="fas fa-bars gt-c-content-color-first" style="font-size: 18px"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <div class="navbar-nav mr-auto" style="text-align: center">
+            
+                <div class="nav-item">
+                    
+                        <a href="/" class="menu gt-a-link">
+                            首页
+                        </a>
+                    
+                </div>
+            
+                <div class="nav-item">
+                    
+                        <a href="/archives" class="menu gt-a-link">
+                            归档
+                        </a>
+                    
+                </div>
+            
+                <div class="nav-item">
+                    
+                        <a href="/tags" class="menu gt-a-link">
+                            标签
+                        </a>
+                    
+                </div>
+            
+                <div class="nav-item">
+                    
+                        <a href="/post/about" class="menu gt-a-link">
+                            关于
+                        </a>
+                    
+                </div>
+            
+        </div>
+        <div style="text-align: center">
+            <form id="gridea-search-form" style="position: relative" data-update="1600085048534" action="/search/index.html">
+                <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+                <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+        </div>
+    </div>
+</nav>
+
+    <div class="post-container">
+        <div class="post-detail gt-bg-theme-color-second">
+            <article class="gt-post-content">
+                <h2 class="post-title">
+                    Mybatis（二） 多数据源最简解决方案
+                </h2>
+                <div class="post-info">
+                    <time class="post-time gt-c-content-color-first">
+                        · 2020-09-14 ·
+                    </time>
+                    
+                </div>
+                <div class="post-content">
+                    <h3 id="配置文件">配置文件</h3>
+<pre><code class="language-java">mybatis.config-location=classpath:mybatis/mybatis-config.xml
+
+spring.datasource.test1.jdbc-url=jdbc:mysql://localhost:3306/test1?serverTimezone=UTC&amp;useUnicode=true&amp;characterEncoding=utf-8&amp;useSSL=true
+spring.datasource.test1.username=root
+spring.datasource.test1.password=root
+spring.datasource.test1.driver-class-name=com.mysql.cj.jdbc.Driver
+
+spring.datasource.test2.jdbc-url=jdbc:mysql://localhost:3306/test2?serverTimezone=UTC&amp;useUnicode=true&amp;characterEncoding=utf-8&amp;useSSL=true
+spring.datasource.test2.username=root
+spring.datasource.test2.password=root
+spring.datasource.test2.driver-class-name=com.mysql.cj.jdbc.Driver
+</code></pre>
+<h3 id="数据源配置">数据源配置</h3>
+<pre><code class="language-java">@Configuration
+@MapperScan(basePackages = &quot;com.neo.mapper.test1&quot;, sqlSessionTemplateRef  = &quot;test1SqlSessionTemplate&quot;)
+public class DataSource1Config {
+
+    @Bean(name = &quot;test1DataSource&quot;)
+    @ConfigurationProperties(prefix = &quot;spring.datasource.test1&quot;)
+    @Primary
+    public DataSource testDataSource() {
+        return DataSourceBuilder.create().build();
+    }
+
+    @Bean(name = &quot;test1SqlSessionFactory&quot;)
+    @Primary
+    public SqlSessionFactory testSqlSessionFactory(@Qualifier(&quot;test1DataSource&quot;) DataSource dataSource) throws Exception {
+        SqlSessionFactoryBean bean = new SqlSessionFactoryBean();
+        bean.setDataSource(dataSource);
+        bean.setMapperLocations(new PathMatchingResourcePatternResolver().getResources(&quot;classpath:mybatis/mapper/test1/*.xml&quot;));
+        return bean.getObject();
+    }
+
+    @Bean(name = &quot;test1TransactionManager&quot;)
+    @Primary
+    public DataSourceTransactionManager testTransactionManager(@Qualifier(&quot;test1DataSource&quot;) DataSource dataSource) {
+        return new DataSourceTransactionManager(dataSource);
+    }
+
+    @Bean(name = &quot;test1SqlSessionTemplate&quot;)
+    @Primary
+    public SqlSessionTemplate testSqlSessionTemplate(@Qualifier(&quot;test1SqlSessionFactory&quot;) SqlSessionFactory sqlSessionFactory) throws Exception {
+        return new SqlSessionTemplate(sqlSessionFactory);
+    }
+}
+</code></pre>
+<ul>
+<li>最关键的地方就是这块了，一层一层注入,首先创建 DataSource，然后创建 SqlSessionFactory 再创建事务，最后包装到 SqlSessionTemplate 中。其中需要指定分库的 mapper 文件地址，以及分库dao层代码</li>
+</ul>
+<pre><code class="language-java">@MapperScan(basePackages = &quot;com.neo.mapper.test1&quot;, sqlSessionTemplateRef  = &quot;test1SqlSessionTemplate&quot;)
+</code></pre>
+<ul>
+<li>这块的注解就是指明了扫描 dao 层，并且给 dao 层注入指定的 SqlSessionTemplate。所有@Bean都需要按照命名指定正确。</li>
+</ul>
+<h3 id="dao-层和-xml层">dao 层和 xml层</h3>
+<ul>
+<li>dao 层和 xml 需要按照库来分在不同的目录<pre><code class="language-java">public interface User1Mapper {
+  List&lt;UserEntity&gt; getAll();
+  UserEntity getOne(Long id);
+  void insert(UserEntity user);
+  void update(UserEntity user);
+  void delete(Long id);
+</code></pre>
+</li>
+</ul>
+<p>}</p>
+<pre><code>-xml层
+```java
+&lt;mapper namespace=&quot;com.neo.mapper.test1.User1Mapper&quot; &gt;
+    &lt;resultMap id=&quot;BaseResultMap&quot; type=&quot;com.neo.model.User&quot; &gt;
+        &lt;id column=&quot;id&quot; property=&quot;id&quot; jdbcType=&quot;BIGINT&quot; /&gt;
+        &lt;result column=&quot;userName&quot; property=&quot;userName&quot; jdbcType=&quot;VARCHAR&quot; /&gt;
+        &lt;result column=&quot;passWord&quot; property=&quot;passWord&quot; jdbcType=&quot;VARCHAR&quot; /&gt;
+        &lt;result column=&quot;user_sex&quot; property=&quot;userSex&quot; javaType=&quot;com.neo.enums.UserSexEnum&quot;/&gt;
+        &lt;result column=&quot;nick_name&quot; property=&quot;nickName&quot; jdbcType=&quot;VARCHAR&quot; /&gt;
+    &lt;/resultMap&gt;
+    
+    &lt;sql id=&quot;Base_Column_List&quot; &gt;
+        id, userName, passWord, user_sex, nick_name
+    &lt;/sql&gt;
+
+    &lt;select id=&quot;getAll&quot; resultMap=&quot;BaseResultMap&quot;  &gt;
+       SELECT 
+       &lt;include refid=&quot;Base_Column_List&quot; /&gt;
+     FROM users
+    &lt;/select&gt;
+
+    &lt;select id=&quot;getOne&quot; parameterType=&quot;java.lang.Long&quot; resultMap=&quot;BaseResultMap&quot; &gt;
+        SELECT 
+       &lt;include refid=&quot;Base_Column_List&quot; /&gt;
+     FROM users
+     WHERE id = #{id}
+    &lt;/select&gt;
+
+    &lt;insert id=&quot;insert&quot; parameterType=&quot;com.neo.model.User&quot; &gt;
+       INSERT INTO 
+          users
+          (userName,passWord,user_sex) 
+        VALUES
+          (#{userName}, #{passWord}, #{userSex})
+    &lt;/insert&gt;
+    
+    &lt;update id=&quot;update&quot; parameterType=&quot;com.neo.model.User&quot; &gt;
+       UPDATE 
+          users 
+       SET 
+        &lt;if test=&quot;userName != null&quot;&gt;userName = #{userName},&lt;/if&gt;
+        &lt;if test=&quot;passWord != null&quot;&gt;passWord = #{passWord},&lt;/if&gt;
+        nick_name = #{nickName}
+       WHERE 
+          id = #{id}
+    &lt;/update&gt;
+    
+    &lt;delete id=&quot;delete&quot; parameterType=&quot;java.lang.Long&quot; &gt;
+       DELETE FROM
+           users 
+       WHERE 
+           id =#{id}
+    &lt;/delete&gt;
+
+&lt;/mapper&gt;
+</code></pre>
+<h3 id="测试">测试</h3>
+<ul>
+<li>测试可以使用 SpringBootTest,也可以放到 Controller中，这里只贴 Controller 层的使用</li>
+</ul>
+<pre><code class="language-java">@RestController
+public class UserController {
+
+    @Autowired
+    private User1Mapper user1Mapper;
+
+	@Autowired
+	private User2Mapper user2Mapper;
+	
+	@RequestMapping(&quot;/getUsers&quot;)
+	public List&lt;UserEntity&gt; getUsers() {
+		List&lt;UserEntity&gt; users=user1Mapper.getAll();
+		return users;
+	}
+	
+    @RequestMapping(&quot;/getUser&quot;)
+    public UserEntity getUser(Long id) {
+    	UserEntity user=user2Mapper.getOne(id);
+        return user;
+    }
+    
+    @RequestMapping(&quot;/add&quot;)
+    public void save(UserEntity user) {
+        user2Mapper.insert(user);
+    }
+    
+    @RequestMapping(value=&quot;update&quot;)
+    public void update(UserEntity user) {
+        user2Mapper.update(user);
+    }
+    
+    @RequestMapping(value=&quot;/delete/{id}&quot;)
+    public void delete(@PathVariable(&quot;id&quot;) Long id) {
+        user1Mapper.delete(id);
+    }
+    
+}
+</code></pre>
+
+                </div>
+            </article>
+        </div>
+
+        
+            <div class="next-post">
+                <div class="next gt-c-content-color-first">下一篇</div>
+                <a href="https://1958818905.github.io/post/spring-boot-zhong-mybatis-de-shi-yong-he-pei-zhi-yi/" class="post-title gt-a-link">
+                    Spring-Boot中MyBatis的使用和配置(一)
+                </a>
+            </div>
+        
+
+        
+
+        
+
+        
+
+        <div class="site-footer gt-c-content-color-first">
+    <div class="slogan gt-c-content-color-first">温故而知新</div>
+    <div class="social-container">
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+    </div>
+    <div class="footer-info">
+        Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a>
+    </div>
+    <div>
+        Theme by <a href="https://imhanjie.com/" target="_blank">imhanjie</a>, Powered by <a
+                href="https://github.com/getgridea/gridea" target="_blank">Gridea | <a href="https://1958818905.github.io/atom.xml" target="_blank">RSS</a></a>
+    </div>
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+    </div>
+</div>
+</body>
+</html>
