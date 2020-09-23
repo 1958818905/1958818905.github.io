@@ -1,0 +1,710 @@
+<html>
+<head>
+    <meta charset="utf-8"/>
+<meta name="description" content=""/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+<title>简单的Springboot案例 | 高士傑</title>
+
+<link rel="shortcut icon" href="https://1958818905.github.io/favicon.ico?v=1600861597436">
+
+<link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://1958818905.github.io/styles/main.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css">
+
+<script src="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.15.10/languages/dockerfile.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.15.10/languages/dart.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/moment@2.27.0/moment.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/js/bootstrap.min.js"></script>
+<!-- DEMO JS -->
+<!--<script src="media/scripts/index.js"></script>-->
+
+
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.css">
+</head>
+<body>
+<div class="main gt-bg-theme-color-first">
+    <nav class="navbar navbar-expand-lg">
+    <div class="navbar-brand">
+        <img class="user-avatar" src="/images/avatar.png" alt="头像">
+        <div class="site-name gt-c-content-color-first">
+            高士傑
+        </div>
+    </div>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <i class="fas fa-bars gt-c-content-color-first" style="font-size: 18px"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <div class="navbar-nav mr-auto" style="text-align: center">
+            
+                <div class="nav-item">
+                    
+                        <a href="/" class="menu gt-a-link">
+                            首页
+                        </a>
+                    
+                </div>
+            
+                <div class="nav-item">
+                    
+                        <a href="/archives" class="menu gt-a-link">
+                            归档
+                        </a>
+                    
+                </div>
+            
+                <div class="nav-item">
+                    
+                        <a href="/tags" class="menu gt-a-link">
+                            标签
+                        </a>
+                    
+                </div>
+            
+                <div class="nav-item">
+                    
+                        <a href="/post/about" class="menu gt-a-link">
+                            关于
+                        </a>
+                    
+                </div>
+            
+        </div>
+        <div style="text-align: center">
+            <form id="gridea-search-form" style="position: relative" data-update="1600861597436" action="/search/index.html">
+                <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+                <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+        </div>
+    </div>
+</nav>
+
+    <div class="post-container">
+        <div class="post-detail gt-bg-theme-color-second">
+            <article class="gt-post-content">
+                <h2 class="post-title">
+                    简单的Springboot案例
+                </h2>
+                <div class="post-info">
+                    <time class="post-time gt-c-content-color-first">
+                        · 2020-09-23 ·
+                    </time>
+                    
+                </div>
+                <div class="post-content">
+                    <p>一、导入依赖</p>
+<pre><code class="language-java"> &lt;dependencies&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-boot-starter-jdbc&lt;/artifactId&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-boot-starter-web&lt;/artifactId&gt;
+        &lt;/dependency&gt;
+
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-boot-starter-thymeleaf&lt;/artifactId&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;mysql&lt;/groupId&gt;
+            &lt;artifactId&gt;mysql-connector-java&lt;/artifactId&gt;
+            &lt;scope&gt;runtime&lt;/scope&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.projectlombok&lt;/groupId&gt;
+            &lt;artifactId&gt;lombok&lt;/artifactId&gt;
+            &lt;optional&gt;true&lt;/optional&gt;
+
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-boot-starter-web&lt;/artifactId&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-boot-starter-data-jdbc&lt;/artifactId&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-boot-starter-data-jpa&lt;/artifactId&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-boot-starter-jdbc&lt;/artifactId&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;io.springfox&lt;/groupId&gt;
+            &lt;artifactId&gt;springfox-swagger2&lt;/artifactId&gt;
+            &lt;version&gt;2.7.0&lt;/version&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;io.springfox&lt;/groupId&gt;
+            &lt;artifactId&gt;springfox-swagger-ui&lt;/artifactId&gt;
+            &lt;version&gt;2.7.0&lt;/version&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-boot-starter&lt;/artifactId&gt;
+        &lt;/dependency&gt;
+
+
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.projectlombok&lt;/groupId&gt;
+            &lt;artifactId&gt;lombok&lt;/artifactId&gt;
+            &lt;scope&gt;provided&lt;/scope&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;mysql&lt;/groupId&gt;
+            &lt;artifactId&gt;mysql-connector-java&lt;/artifactId&gt;
+            &lt;scope&gt;runtime&lt;/scope&gt;
+        &lt;/dependency&gt;
+        &lt;!-- druid数据库连接池--&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;com.alibaba&lt;/groupId&gt;
+            &lt;artifactId&gt;druid&lt;/artifactId&gt;
+            &lt;version&gt;1.1.10&lt;/version&gt;
+        &lt;/dependency&gt;
+        &lt;!--lombok依赖--&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.projectlombok&lt;/groupId&gt;
+            &lt;artifactId&gt;lombok&lt;/artifactId&gt;
+            &lt;optional&gt;true&lt;/optional&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-boot-starter-data-redis&lt;/artifactId&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-boot-starter-test&lt;/artifactId&gt;
+            &lt;scope&gt;test&lt;/scope&gt;
+            &lt;exclusions&gt;
+                &lt;exclusion&gt;
+                    &lt;groupId&gt;org.junit.vintage&lt;/groupId&gt;
+                    &lt;artifactId&gt;junit-vintage-engine&lt;/artifactId&gt;
+                &lt;/exclusion&gt;
+            &lt;/exclusions&gt;
+        &lt;/dependency&gt;
+
+    &lt;/dependencies&gt;
+
+</code></pre>
+<p>二、连接数据库</p>
+<pre><code class="language-java">
+spring:
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/test?useSSL=false&amp;useUnicode=true&amp;charactEnoding=utf-8&amp;autoReconnect=true&amp;serverTimezone=Asia/Shanghai
+    username: root
+    password: root
+    initiaSize: 20
+    minIdle: 50
+    maxActive: 500
+jpa:
+  hibernate:
+    ddl-auto: update
+  show-sql: true
+server:
+  port: 8080
+
+</code></pre>
+<p>三、创建文件</p>
+<ol>
+<li>在entity下创建User</li>
+</ol>
+<pre><code class="language-java">package com.example.demo1.entity;
+
+
+import lombok.Data;
+
+import javax.persistence.*;
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.sql.Timestamp;
+
+
+@Table(name = &quot;sys_user&quot;)
+@Entity
+@Data
+public class User implements Serializable {
+
+    @Id
+    private Integer id;
+    private String student_name;
+    private Integer result;
+    private Timestamp create_time;
+    private Long update_user;
+    private String remark;
+
+
+}
+
+</code></pre>
+<ol start="2">
+<li>在dao下创建UserDao</li>
+</ol>
+<pre><code class="language-java">package com.example.demo1.dao;
+
+import com.example.demo1.entity.User;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.List;
+
+public interface UserDao extends JpaRepository&lt;User, Integer&gt; {
+    User findById(int id);
+}
+</code></pre>
+<ol start="3">
+<li>在Service下创建UserService和RedisService</li>
+</ol>
+<ul>
+<li>UserService</li>
+</ul>
+<pre><code class="language-java">package com.example.demo1.service;
+
+import com.example.demo1.entity.User;
+
+import java.util.List;
+
+public interface UserService {
+
+
+    /**
+     * 保存用户
+     *
+     * @param user
+     * @return
+     */
+    User save(User user);
+
+    /**
+     * 根据主键删除用户
+     *
+     * @param id
+     */
+    void deleteUserById(int id);
+
+    /**
+     * 根据主键查询
+     *
+     * @param id
+     * @return
+     */
+    User queryById(int id);
+
+    List&lt;User&gt; queryAll();
+}
+
+</code></pre>
+<ul>
+<li>RedisService<pre><code class="language-java">package com.example.demo1.service;
+
+</code></pre>
+</li>
+</ul>
+<p>public interface RedisService {<br>
+/**<br>
+* 储存数据<br>
+*<br>
+* @param key<br>
+* @param value<br>
+*/<br>
+void set(String key, String value);</p>
+<pre><code>/**
+ * 获取数据
+ *
+ * @param key
+ * @return
+ */
+String get(String key);
+
+/**
+ * 设置超期时间
+ *
+ * @param key
+ * @param expire
+ * @return
+ */
+boolean expire(String key, long expire);
+
+/**
+ * 删除数据
+ *
+ * @param key
+ */
+void remove(String key);
+
+/**
+ * 自增操作
+ *
+ * @param key
+ * @param delta 自增步长
+ * @return
+ */
+Long incream(String key, long delta);
+</code></pre>
+<p>}</p>
+<pre><code>4. 在Service下的impl下创建UserServiceImpl和RedisServiceImpl
+- UserServiceImpl
+```java
+package com.example.demo1.service.impl;
+
+import com.example.demo1.dao.UserDao;
+import com.example.demo1.entity.User;
+import com.example.demo1.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+public class UserServiceImpl implements UserService {
+
+    @Autowired
+    private UserDao userDao;
+
+
+    @Override
+    public User save(User user) {
+        return userDao.save(user);
+    }
+
+    @Override
+    public void deleteUserById(int id) {
+        userDao.deleteById(id);
+
+    }
+
+
+    @Override
+    public User queryById(int id) {
+        return userDao.getOne(id);
+    }
+
+    @Override
+    public List&lt;User&gt; queryAll() {
+        return userDao.findAll();
+    }
+}
+</code></pre>
+<ul>
+<li>RidisServiceImpl</li>
+</ul>
+<pre><code class="language-java">package com.example.demo1.service.impl;
+
+import com.example.demo1.service.RedisService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.stereotype.Service;
+
+import java.security.Key;
+import java.util.concurrent.TimeUnit;
+
+@Service
+public class RedisServiceImpl implements RedisService {
+
+    @Autowired
+    private StringRedisTemplate stringRedisTemplate;
+
+    @Override
+    public void set(String key, String value) {
+        stringRedisTemplate.opsForValue().set(key, value);
+    }
+
+    @Override
+    public String get(String key) {
+        return stringRedisTemplate.opsForValue().get(key);
+    }
+
+    @Override
+    public boolean expire(String key, long expire) {
+        return stringRedisTemplate.expire(key, expire, TimeUnit.SECONDS);
+    }
+
+
+    @Override
+    public void remove(String key) {
+        stringRedisTemplate.delete(key);
+
+    }
+
+    @Override
+    public Long incream(String key, long delta) {
+        return stringRedisTemplate.opsForValue().increment(key, delta);
+    }
+}
+</code></pre>
+<ol start="5">
+<li>创建controller并在其下创建IndexController和UserController</li>
+</ol>
+<ul>
+<li>UserController</li>
+</ul>
+<pre><code class="language-java">package com.example.demo1.controller;
+
+
+import com.example.demo1.entity.User;
+
+import com.example.demo1.service.RedisService;
+import com.example.demo1.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping(&quot;user&quot;)
+public class UserController {
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private RedisService redisService;
+
+    @GetMapping(&quot;/queryById&quot;)
+    public String queryById(int id) {
+        String userStr = redisService.get(id + &quot;&quot;);
+        if (userStr != null) {
+            redisService.set(id + &quot;&quot;, userService.queryById(id).toString());
+        }
+        return userStr;
+    }
+
+    @PostMapping(&quot;/save_or_update&quot;)
+    public User save_or_update(User user) {
+        return userService.save(user);
+    }
+
+    @DeleteMapping(&quot;/Delete&quot;)
+    public Boolean Delete(int id) {
+        userService.deleteUserById(id);
+        return true;
+
+    }
+
+
+}
+</code></pre>
+<ul>
+<li>IndexController</li>
+</ul>
+<pre><code class="language-java">
+package com.example.demo1.controller;
+
+import com.example.demo1.entity.User;
+import com.example.demo1.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@Controller
+public class IndexController {
+    @Autowired
+    private UserService userService;
+
+    @RequestMapping(&quot;/&quot;)
+    public String index(ModelMap map) {
+        map.addAttribute(&quot;host&quot;, &quot;内蒙古电子&quot;);
+        return &quot;index&quot;;
+    }
+
+    @RequestMapping(&quot;/echarts&quot;)
+    public String echarts() {
+        return &quot;echarts&quot;;
+    }
+
+    @RequestMapping(&quot;/echartx&quot;)
+    public String echartx(ModelMap map) {
+        List&lt;User&gt; users = userService.queryAll();
+        List&lt;String&gt; names = new ArrayList&lt;&gt;();
+        List&lt;Integer&gt; sorces = new ArrayList&lt;&gt;();
+        if (users != null &amp;&amp; users.size() &gt; 0) {
+            users.stream().forEach(user -&gt; {
+                names.add(user.getStudent_name());
+                sorces.add(user.getResult());
+            });
+        }
+        map.addAttribute(&quot;names&quot;, names);
+        map.addAttribute(&quot;sorces&quot;, sorces);
+        return &quot;echartsx&quot;;
+    }
+}
+</code></pre>
+<ol start="6">
+<li>在config下创建Swagger2Config</li>
+</ol>
+<pre><code class="language-java">package com.example.demo1.config;
+
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import springfox.documentation.builders.ApiInfoBuilder;
+import springfox.documentation.builders.PathSelectors;
+import springfox.documentation.builders.RequestHandlerSelectors;
+import springfox.documentation.service.ApiInfo;
+import springfox.documentation.spi.DocumentationType;
+import springfox.documentation.spring.web.plugins.Docket;
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
+
+
+@Configuration
+@EnableSwagger2
+public class Swagger2Config {
+    @Bean
+    public Docket createRestApi() {
+        return new Docket(DocumentationType.SWAGGER_2)
+                .apiInfo(apiInfo())
+                .select()
+                .apis(RequestHandlerSelectors.basePackage(&quot;com.example.demo1.controller&quot;))
+                //   .apis(RequestHandlerSelectors.withClassAnnotation(Api.class))
+                // .apis(RequestHandlerSelectors.withMethodAnnotation(ApiOperation.class))
+                .paths(PathSelectors.any())
+                .build();
+    }
+
+    private ApiInfo apiInfo() {
+        return new ApiInfoBuilder()
+                .title(&quot;SwaggerUI演示&quot;)
+                .description(&quot;内蒙古电子信息技术职业学院&quot;)
+                .contact(&quot;gsj&quot;)
+                .version(&quot;1.0&quot;)
+                .build();
+
+
+    }
+}
+</code></pre>
+<ol start="7">
+<li>在resources下创建templates文件夹并在其下创建echarts和echartsx</li>
+</ol>
+<ul>
+<li>echarts</li>
+</ul>
+<pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head lang=&quot;en&quot;&gt;
+    &lt;meta charset=&quot;UTF-8&quot;/&gt;
+    &lt;title&gt;Spring Boot中使用ECharts&lt;/title&gt;
+    &lt;script src=&quot;https://cdn.bootcss.com/echarts/4.6.0/echarts.min.js&quot;&gt;&lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div id=&quot;main&quot; style=&quot;width: 1000px;height:400px;&quot;&gt;&lt;/div&gt;
+&lt;/body&gt;
+&lt;script type=&quot;text/javascript&quot;&gt;
+    let myChart = echarts.init(document.getElementById('main'));
+    option = {
+        xAxis: {
+            type: 'category',
+            data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+        },
+        yAxis: {
+            type: 'value'
+        },
+        series: [{
+            data: [820, 932, 901, 934, 1290, 1330, 1320],
+            type: 'line'
+        }]
+    };
+    myChart.setOption(option);
+&lt;/script&gt;
+&lt;/html&gt;
+</code></pre>
+<ul>
+<li>echartsx</li>
+</ul>
+<pre><code class="language-html">
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head lang=&quot;en&quot;&gt;
+    &lt;meta charset=&quot;UTF-8&quot;/&gt;
+    &lt;title&gt;Spring Boot中使用ECharts&lt;/title&gt;
+    &lt;script src=&quot;https://cdn.bootcss.com/echarts/4.6.0/echarts.min.js&quot;&gt;&lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div id=&quot;main&quot; style=&quot;width: 1000px;height:400px;&quot;&gt;&lt;/div&gt;
+&lt;/body&gt;
+&lt;script type=&quot;text/javascript&quot; th:inline=&quot;javascript&quot;&gt;
+    let myChart = echarts.init(document.getElementById('main'));
+    option = {
+        xAxis: {
+            type: 'category',
+            data: [[${names}]]
+        },
+        yAxis: {
+            type: 'value'
+        },
+        series: [{
+            data: [[${sorces}]],
+            type: 'line'
+        }]
+    };
+    myChart.setOption(option);
+&lt;/script&gt;
+&lt;/html&gt;
+</code></pre>
+
+                </div>
+            </article>
+        </div>
+
+        
+            <div class="next-post">
+                <div class="next gt-c-content-color-first">下一篇</div>
+                <a href="https://1958818905.github.io/post/mybatiser-duo-shu-ju-yuan-zui-jian-jie-jue-fang-an/" class="post-title gt-a-link">
+                    Mybatis（二） 多数据源最简解决方案
+                </a>
+            </div>
+        
+
+        
+
+        
+
+        
+
+        <div class="site-footer gt-c-content-color-first">
+    <div class="slogan gt-c-content-color-first">温故而知新</div>
+    <div class="social-container">
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+    </div>
+    <div class="footer-info">
+        Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a>
+    </div>
+    <div>
+        Theme by <a href="https://imhanjie.com/" target="_blank">imhanjie</a>, Powered by <a
+                href="https://github.com/getgridea/gridea" target="_blank">Gridea | <a href="https://1958818905.github.io/atom.xml" target="_blank">RSS</a></a>
+    </div>
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+</script>
+
+    </div>
+</div>
+</body>
+</html>
