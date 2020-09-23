@@ -6,7 +6,7 @@
 
 <title>简单的Springboot案例 | 高士傑</title>
 
-<link rel="shortcut icon" href="https://1958818905.github.io/favicon.ico?v=1600861597436">
+<link rel="shortcut icon" href="https://1958818905.github.io/favicon.ico?v=1600861678269">
 
 <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://1958818905.github.io/styles/main.css">
@@ -77,7 +77,7 @@
             
         </div>
         <div style="text-align: center">
-            <form id="gridea-search-form" style="position: relative" data-update="1600861597436" action="/search/index.html">
+            <form id="gridea-search-form" style="position: relative" data-update="1600861678269" action="/search/index.html">
                 <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
                 <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
             </form>
@@ -306,57 +306,60 @@ public interface UserService {
 
 </code></pre>
 <ul>
-<li>RedisService<pre><code class="language-java">package com.example.demo1.service;
-
-</code></pre>
-</li>
+<li>RedisService</li>
 </ul>
-<p>public interface RedisService {<br>
-/**<br>
-* 储存数据<br>
-*<br>
-* @param key<br>
-* @param value<br>
-*/<br>
-void set(String key, String value);</p>
-<pre><code>/**
- * 获取数据
- *
- * @param key
- * @return
- */
-String get(String key);
+<pre><code class="language-java">package com.example.demo1.service;
+public interface RedisService {
+    /**
+     * 储存数据
+     *
+     * @param key
+     * @param value
+     */
+    void set(String key, String value);
 
-/**
- * 设置超期时间
- *
- * @param key
- * @param expire
- * @return
- */
-boolean expire(String key, long expire);
+    /**
+     * 获取数据
+     *
+     * @param key
+     * @return
+     */
+    String get(String key);
 
-/**
- * 删除数据
- *
- * @param key
- */
-void remove(String key);
+    /**
+     * 设置超期时间
+     *
+     * @param key
+     * @param expire
+     * @return
+     */
+    boolean expire(String key, long expire);
 
-/**
- * 自增操作
- *
- * @param key
- * @param delta 自增步长
- * @return
- */
-Long incream(String key, long delta);
+    /**
+     * 删除数据
+     *
+     * @param key
+     */
+    void remove(String key);
+
+    /**
+     * 自增操作
+     *
+     * @param key
+     * @param delta 自增步长
+     * @return
+     */
+    Long incream(String key, long delta);
+
+}
 </code></pre>
-<p>}</p>
-<pre><code>4. 在Service下的impl下创建UserServiceImpl和RedisServiceImpl
-- UserServiceImpl
-```java
-package com.example.demo1.service.impl;
+<ol>
+<li>在Service下的impl下创建UserServiceImpl和RedisServiceImpl</li>
+</ol>
+<ul>
+<li>UserServiceImpl</li>
+</ul>
+<pre><code class="language-java">package com.example.demo1.service.impl;
 
 import com.example.demo1.dao.UserDao;
 import com.example.demo1.entity.User;
